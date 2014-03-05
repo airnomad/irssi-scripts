@@ -2,8 +2,11 @@ import irssi
 import os
 
 settings='/home/tomic/.irssi/aggregate-mute'
+last_target = '' 
 
 def print_to_aggregate(dest, text, stripped):
+    global last_target;
+
     win = irssi.window_find_item('aggregate')
 
     if not dest.server or \
@@ -14,7 +17,10 @@ def print_to_aggregate(dest, text, stripped):
     msg = '%s %s' %(dest.target, text)
 
     if is_valid_msg ( msg ):
-        win.prnt(dest.target + ' ' + text, irssi.MSGLEVEL_CLIENTCRAP)
+        if dest.target == last_target:
+            msg = "%s %s" %(" " * len(dest.target), text)
+        win.prnt(msg, irssi.MSGLEVEL_CLIENTCRAP)
+        last_target = dest.target
 
 
 def command_agregate(command, server, channel):
